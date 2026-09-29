@@ -31,6 +31,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'static_tf = code05.static_tf_broadcaster:main',
+            'dynamic_tf = code05.dynamic_tf_broadcaster:main',
+            'tf_listener = code05.tf_listener:main',
         ],
     },
 )
