@@ -1,0 +1,90 @@
+# ==================================================================
+# 파일: bridge.yaml
+# 패키지: ros_gz_bridge
+# 설명: Gazebo Sim(구 Ignition)과 ROS 2 간의 양방향/단방향 메시지 변환 매핑 설정입니다.
+# 
+# 방향 플래그(direction) 규칙:
+#   - GZ_TO_ROS: Gazebo Transport 토픽 -> ROS 2 DDS 토픽 단방향 발행
+#   - ROS_TO_GZ: ROS 2 DDS 토픽 -> Gazebo Transport 토픽 단방향 전달
+#   - BIDIRECTIONAL: 양방향 동기화
+# ==================================================================
+
+# 1. 시뮬레이션 가상 시간 동기화
+# Gazebo 물리 엔진이 연산한 가상 시간(/clock)을 ROS 2로 전달하여
+# use_sim_time이 설정된 모든 노드가 시뮬레이션 시간과 동기화되도록 합니다.
+- topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# 2. 차량 속도/조향 제어 명령
+# 사용자의 teleop 노드나 자율주행 제어 노드가 발행하는 cmd_vel 속도 명령을
+# Gazebo 내부의 차동구동/아커만 조향 플러그인으로 전달합니다.
+- topic_name: "/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# 3. 주행 오도메트리(Odometry) 피드백
+# Gazebo 물리 엔진 상에서 바퀴가 회전하며 이동한 누적 위치와 속도를
+# ROS 2의 내비게이션(Nav2) 및 SLAM 노드로 전달합니다.
+- topic_name: "/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# 4. 좌표계 동적 변환 정보 (/tf)
+# Gazebo에서 계산된 월드-로봇 간의 위치 자세 3D 변환을 ROS 2 tf 버퍼로 공급합니다.
+- topic_name: "/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# 5. 관절 상태 모니터링 (/joint_states)
+# Gazebo 상에서 회전하는 실제 바퀴 및 조향 각도를 ROS 2로 전달합니다.
+- topic_name: "/joint_states"
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
+
+# ==============================================================================
+# 오토모티브SW프로그래밍 6주차: ros_gz_bridge 센서 매핑 설정 파일
+# 작성자: 김동주 교수 (deekim@cu.ac.kr)
+#
+# [설명]
+# Gazebo Sim(Protobuf 기반)의 가상 센서 토픽을
+# ROS 2(DDS 기반) 표준 sensor_msgs 토픽으로 실시간 변환하는 브릿지 규칙 정의서입니다.
+# direction: GZ_TO_ROS (Gazebo 시뮬레이터에서 발생한 센서 데이터를 ROS 2로 전달)
+# ==============================================================================
+
+# 1. 2D 라이다 레이저 스캔 매핑
+- ros_topic_name: "/scan"
+  gz_topic_name: "/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: "GZ_TO_ROS"
+  qos_profile: SENSOR_DATA
+
+# 2. RGB 전방 카메라 원시 이미지 스트림 매핑
+- ros_topic_name: "/camera/image_raw"
+  gz_topic_name: "/camera/image_raw"
+  ros_type_name: "sensor_msgs/msg/Image"
+  gz_type_name: "gz.msgs.Image"
+  direction: "GZ_TO_ROS"
+  qos_profile: SENSOR_DATA
+
+# 3. 카메라 내부 파라미터 및 왜곡 메타데이터 매핑
+- ros_topic_name: "/camera/camera_info"
+  gz_topic_name: "/camera/camera_info"
+  ros_type_name: "sensor_msgs/msg/CameraInfo"
+  gz_type_name: "gz.msgs.CameraInfo"
+  direction: "GZ_TO_ROS"
+  qos_profile: SENSOR_DATA
+
+# 4. IMU 6축 관성 센서(가속도계 및 자이로스코프) 데이터 매핑
+- ros_topic_name: "/imu/data"
+  gz_topic_name: "/imu/data"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: "GZ_TO_ROS"
+  qos_profile: SENSOR_DATA
