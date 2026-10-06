@@ -111,7 +111,7 @@ class SensorListenerNode(Node):
 
         # (4) 1미터 이내 전방 장애물 근접 시 긴급 경고 출력
         if min_distance < 1.0:
-            self.get_logger().warn(
+            self.get_logger().warning(
                 f'[라이다 긴급경고] 전방 장애물 초근접! '
                 f'거리: {min_distance:4.2f}m | 각도: {detect_angle_deg:+5.1f}°'
             )
@@ -141,7 +141,7 @@ class SensorListenerNode(Node):
 
         # 차체가 10도 이상 급격히 기울어지면 주의 경고 출력
         if abs(roll_deg) > 10.0 or abs(pitch_deg) > 10.0:
-            self.get_logger().warn(
+            self.get_logger().warning(
                 f'[IMU 경고] 차체 급경사/기울기 감지! Roll={roll_deg:+5.1f}°, Pitch={pitch_deg:+5.1f}°'
             )
 

@@ -56,6 +56,9 @@ setup(
             'dynamic_tf = my_sensor_pkg.dynamic_tf_broadcaster:main',
             'tf_listener = my_sensor_pkg.tf_listener:main',
             'keyboard_teleop = my_sensor_pkg.keyboard_teleop:main',
+            #'emergency_stop = my_sensor_pkg.emergency_stop_node:main',
+            'emergency_stop = answer.emergency_stop_node:main',
+            'emergency_stop_node = answer.emergency_stop_node:main',
         ],
     },
 )
