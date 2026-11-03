@@ -1,0 +1,9 @@
+[console_scripts]
+ackermann_controller = my_sensor_pkg.ackermann_controller:main
+dynamic_tf = my_sensor_pkg.dynamic_tf_broadcaster:main
+emergency_stop = answer.emergency_stop_node:main
+emergency_stop_node = answer.emergency_stop_node:main
+keyboard_teleop = my_sensor_pkg.keyboard_teleop:main
+sensor_listener = my_sensor_pkg.sensor_listener:main
+static_tf = my_sensor_pkg.static_tf_broadcaster:main
+tf_listener = my_sensor_pkg.tf_listener:main
